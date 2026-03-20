@@ -1,6 +1,3 @@
-#! /home/ppno/Dev/DSM/.env/bin/python3
-
-
 from models import Node, Element, Truss
 
 # define nodes
