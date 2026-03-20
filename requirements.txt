@@ -1,0 +1,2 @@
+# mainly for linalg solvers
+numpy==2.4.3
