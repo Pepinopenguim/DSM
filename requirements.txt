@@ -1,2 +1,5 @@
 # mainly for linalg solvers
 numpy==2.4.3
+
+# for drawing
+matplotlib==3.10.8

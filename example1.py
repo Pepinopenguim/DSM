@@ -3,7 +3,7 @@ from models import Node, Element, Truss
 # define nodes
 n1 = Node((0,0), support=(True, True)) # True means limited!
 n2 = Node((1,0), load=(200, 150)) # loads in Newton! Always SI
-n3 = Node((0,1), support=(True, False))
+n3 = Node((0,1), support=(False, True))
 n4 = Node((1,1), load=(0,-100))
 
 # define elements of Truss
@@ -26,3 +26,5 @@ truss.calc_global_stiffness()
 truss.solve()
 
 print(truss.resultants)
+
+truss.draw()

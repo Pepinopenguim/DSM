@@ -1,6 +1,8 @@
 
 from typing import List, Tuple
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 class Node(object):
     def __init__(self, coord:Tuple[float, float], support:Tuple[bool, bool]=(False, False), load:Tuple[float, float]=(0.0,0.0)):
@@ -9,6 +11,30 @@ class Node(object):
         self.y = coord[1]
         self.support = support 
         self.load = load
+
+    @classmethod
+    def as_polar(cls, origin:Tuple[float, float], radius:float, angle:float = None, angle_rad : float = None,
+                 support:Tuple[bool, bool]=(False, False),
+                 load:Tuple[float, float]=(0.0,0.0)
+                ):
+        
+
+        if (angle is None) and (angle_rad is None):
+            raise Exception("No angle provided!")
+        
+        if angle:
+            angle_rad = angle * np.pi / 180
+        
+        dx = radius * np.cos(angle_rad)
+        dy = radius * np.sin(angle_rad)
+
+        coord = (origin[0]+dx, origin[1]+dy)
+
+        return cls(coord=coord, support=support, load=load)
+
+
+
+
 
 class Element(object):
     _id_counter = 0
@@ -51,7 +77,7 @@ class Truss(object):
                 if nd not in self.nodes:
                     self.nodes.append(nd)
 
-        
+        self.resultants = None
         self.num_nodes = len(self.nodes)
         
         # extremely important, will work as matrix indexes
@@ -119,16 +145,86 @@ class Truss(object):
         self.u = np.linalg.solve(self.K_sys, self.F_sys)
         self.resultants = np.linalg.multi_dot([self.K, self.u])
         # with these values, solve for reactions
+
+    def draw(self):
+        # define graph element
+        self.fig, self.ax = plt.subplots()
+
+        lines = [[elt.node1.coord, elt.node2.coord] for elt in self.elements]
+        for line in lines:
+            self.ax.plot(
+                [i
+                 [0] for i in line],
+                [i[1] for i in line],
+                color='grey',
+                linewidth=3
+            )
+
+        # get max load
+        max_load = max([
+            abs(l)
+            for nd in self.nodes
+            for l in nd.load
+        ])
+
+        # get scale
+        xmin, xmax = self.ax.get_xlim()
+        ymin, ymax = self.ax.get_ylim()
+        
+        axis_size =  max(abs(xmax - xmin), abs(ymax - ymin))
+
+        self.ax.set_xlim(-.5, axis_size)
+        self.ax.set_ylim(-.5, axis_size)
         
 
 
+        for nd in self.nodes:
 
+            if not any(nd.support):
+                self.ax.plot(
+                    nd.x,
+                    nd.y,
+                    marker="o",
+                    color="blue",
+                )
+            else:
+                if nd.support[0]:
+                    self.ax.plot(
+                        nd.x,
+                        nd.y,
+                        marker=5,
+                        markersize=15,
+                        color="blue",
+                    )
+
+                if nd.support[1]:
+                    self.ax.plot(
+                        nd.x,
+                        nd.y,
+                        marker=6,
+                        markersize=15,
+                        color="blue",
+                    )
+
+            self.ax.annotate(
+                f"Nó {nd.id}",
+                nd.coord,
+                (nd.x - axis_size * .01, nd.y + axis_size * .01),
+                color="blue"
+            )
+
+            # loads
+            if any([l != 0 for l in nd.load]):
+                self.ax.quiver(
+                    nd.x,
+                    nd.y,
+                    nd.load[0] / max_load * (axis_size *.2),
+                    nd.load[1] / max_load * (axis_size *.2),
+                    color="red"
+                )
+
+        plt.show()
 
 
         
-
-
-
-
-
     
