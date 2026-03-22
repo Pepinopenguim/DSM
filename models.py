@@ -22,7 +22,7 @@ class Node(object):
         if (angle is None) and (angle_rad is None):
             raise Exception("No angle provided!")
         
-        if angle:
+        if angle is not None:
             angle_rad = angle * np.pi / 180
         
         dx = radius * np.cos(angle_rad)
