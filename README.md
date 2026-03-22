@@ -6,5 +6,5 @@ No post processing yet implemented, simple truss visualization
 # How to run
 
 * **Install dependencies:** `pip install -r requirements`
-* **Build:** Follow the examples above to construct your truss.
+* **Build:** Follow the example files to build your truss.
 * **profit**
