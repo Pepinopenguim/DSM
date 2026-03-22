@@ -5,7 +5,6 @@ No post processing yet implemented, simple truss visualization
 
 # How to run
 
-
-> pip install -r requirements (to install numpy and matplotlib)
-> build you truss with the help of the examples above
-> profit
+* **Install dependencies:** `pip install -r requirements`
+* **Build:** Follow the examples above to construct your truss.
+* **profit**
